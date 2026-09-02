@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Travel Expense Planner</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        /* HEADER */
+
+        .header {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            color: #222;
+        }
+
+        .header p {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* FORM */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #444;
+        }
+
+        input {
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        input:focus {
+            border-color: #2196f3;
+        }
+
+        .full {
+            grid-column: span 2;
+        }
+
+        /* BUTTON */
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 11px 18px;
+            background: #2196f3;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #1976d2;
+        }
+
+        .button-area {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .reset-btn {
+            background: #777;
+        }
+
+        .reset-btn:hover {
+            background: #555;
+        }
+
+        /* EXPENSE HEADER */
+
+        .expense-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .expense-header h2 {
+            font-size: 20px;
+        }
+
+        /* EXPENSE ROW */
+
+        .expense-row {
+            display: grid;
+            grid-template-columns: 1fr 150px 40px;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .remove-btn {
+            background: #e74c3c;
+            padding: 8px;
+        }
+
+        .remove-btn:hover {
+            background: #c0392b;
+        }
+
+        /* RESULTS */
+
+        .results {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .result-box {
+            background: #f5f8fc;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .result-box h3 {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 7px;
+        }
+
+        .result-box p {
+            font-size: 23px;
+            font-weight: bold;
+            color: #222;
+        }
+
+        /* PROGRESS */
+
+        .progress-section {
+            margin-top: 15px;
+        }
+
+        .progress-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .progress {
+            height: 12px;
+            background: #ddd;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #2196f3;
+            transition: 0.3s;
+        }
+
+        /* SUMMARY */
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 9px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        /* STATUS */
+
+        #status {
+            color: #2196f3;
+        }
+
+        .over-budget {
+            color: #e74c3c !important;
+        }
+
+        .within-budget {
+            color: #27ae60 !important;
+        }
+
+        /* FOOTER */
+
+        .footer {
+            text-align: center;
+            color: #fff;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .card {
+                padding: 17px;
+            }
+
+            .header h1 {
+                font-size: 27px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: span 1;
+            }
+
+            .expense-row {
+                grid-template-columns: 1fr 100px 40px;
+            }
+
+            .results {
+                grid-template-columns: 1fr 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- HEADER -->
+
+    <div class="card">
+
+        <div class="header">
+
+            <h1>✈️ Travel Expense Planner</h1>
+
+            <p>Plan your trip and manage your travel budget</p>
+
+        </div>
+
+
+        <!-- TRIP INFORMATION -->
+
+        <div class="form-grid">
+
+
+            <div class="input-group full">
+
+                <label>Destination</label>
+
+                <input
+                    type="text"
+                    id="destination"
+                    placeholder="Example: Goa"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>Start Date</label>
+
+                <input
+                    type="date"
+                    id="startDate"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>End Date</label>
+
+                <input
+                    type="date"
+                    id="endDate"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>Number of Travelers</label>
+
+                <input
+                    type="number"
+                    id="travelers"
+                    value="1"
+                    min="1"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>Total Budget (₹)</label>
+
+                <input
+                    type="number"
+                    id="budget"
+                    value="20000"
+                    min="0"
+                >
+
+            </div>
+
+
+        </div>
+
+
+        <div class="button-area">
+
+            <button onclick="calculateExpense()">
+                Calculate
+            </button>
+
+            <button
+                class="reset-btn"
+                onclick="resetPlanner()"
+            >
+                Reset
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- EXPENSES -->
+
+    <div class="card">
+
+
+        <div class="expense-header">
+
+            <h2>💰 Expenses</h2>
+
+            <button onclick="addExpense()">
+                + Add Expense
+            </button>
+
+        </div>
+
+
+        <div id="expenseList">
+
+
+            <div class="expense-row">
+
+                <input
+                    type="text"
+                    class="expense-name"
+                    value="Transportation"
+                >
+
+                <input
+                    type="number"
+                    class="expense-amount"
+                    value="0"
+                    min="0"
+                >
+
+                <button
+                    class="remove-btn"
+                    onclick="removeExpense(this)"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="expense-row">
+
+                <input
+                    type="text"
+                    class="expense-name"
+                    value="Hotel"
+                >
+
+                <input
+                    type="number"
+                    class="expense-amount"
+                    value="0"
+                    min="0"
+                >
+
+                <button
+                    class="remove-btn"
+                    onclick="removeExpense(this)"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="expense-row">
+
+                <input
+                    type="text"
+                    class="expense-name"
+                    value="Food"
+                >
+
+                <input
+                    type="number"
+                    class="expense-amount"
+                    value="0"
+                    min="0"
+                >
+
+                <button
+                    class="remove-btn"
+                    onclick="removeExpense(this)"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="expense-row">
+
+                <input
+                    type="text"
+                    class="expense-name"
+                    value="Activities"
+                >
+
+                <input
+                    type="number"
+                    class="expense-amount"
+                    value="0"
+                    min="0"
+                >
+
+                <button
+                    class="remove-btn"
+                    onclick="removeExpense(this)"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="expense-row">
+
+                <input
+                    type="text"
+                    class="expense-name"
+                    value="Shopping"
+                >
+
+                <input
+                    type="number"
+                    class="expense-amount"
+                    value="0"
+                    min="0"
+                >
+
+                <button
+                    class="remove-btn"
+                    onclick="removeExpense(this)"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- RESULTS -->
+
+    <div class="card">
+
+
+        <div class="results">
+
+
+            <div class="result-box">
+
+                <h3>Total Trip Cost</h3>
+
+                <p id="totalCost">
+                    ₹0
+                </p>
+
+            </div>
+
+
+            <div class="result-box">
+
+                <h3>Cost Per Person</h3>
+
+                <p id="perPerson">
+                    ₹0
+                </p>
+
+            </div>
+
+
+            <div class="result-box">
+
+                <h3>Remaining Budget</h3>
+
+                <p id="remaining">
+                    ₹0
+                </p>
+
+            </div>
+
+
+            <div class="result-box">
+
+                <h3>Budget Status</h3>
+
+                <p id="status">
+                    —
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- PROGRESS BAR -->
+
+        <div class="progress-section">
+
+            <div class="progress-top">
+
+                <span>Budget Used</span>
+
+                <span id="percentage">
+                    0%
+                </span>
+
+            </div>
+
+
+            <div class="progress">
+
+                <div
+                    class="progress-bar"
+                    id="progressBar"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="card">
+
+        <h2>📊 Expense Summary</h2>
+
+        <div id="summary">
+
+            <div class="summary-row">
+
+                <span>No expenses calculated</span>
+
+                <span>₹0</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+
+        Travel Expense Planner • HTML • CSS • JavaScript
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+// =====================================================
+// ADD EXPENSE
+// =====================================================
+
+function addExpense() {
+
+
+    const expenseList =
+        document.getElementById("expenseList");
+
+
+    const row =
+        document.createElement("div");
+
+
+    row.className =
+        "expense-row";
+
+
+    row.innerHTML = `
+
+        <input
+            type="text"
+            class="expense-name"
+            placeholder="Expense name"
+        >
+
+        <input
+            type="number"
+            class="expense-amount"
+            value="0"
+            min="0"
+        >
+
+        <button
+            class="remove-btn"
+            onclick="removeExpense(this)"
+        >
+            ×
+        </button>
+
+    `;
+
+
+    expenseList.appendChild(row);
+
+}
+
+
+
+// =====================================================
+// REMOVE EXPENSE
+// =====================================================
+
+function removeExpense(button) {
+
+    button.parentElement.remove();
+
+    calculateExpense();
+
+}
+
+
+
+// =====================================================
+// CALCULATE EXPENSE
+// =====================================================
+
+function calculateExpense() {
+
+
+    // GET VALUES
+
+    const budget =
+        Number(document.getElementById("budget").value) || 0;
+
+
+    const travelers =
+        Number(document.getElementById("travelers").value) || 1;
+
+
+    // GET EXPENSES
+
+    const names =
+        document.querySelectorAll(".expense-name");
+
+
+    const amounts =
+        document.querySelectorAll(".expense-amount");
+
+
+    let total =
+        0;
+
+
+    let expenses =
+        [];
+
+
+    for(let i = 0; i < amounts.length; i++) {
+
+
+        let name =
+            names[i].value.trim();
+
+
+        let amount =
+            Number(amounts[i].value) || 0;
+
+
+        if(amount < 0) {
+
+            amount = 0;
+
+        }
+
+
+        total += amount;
+
+
+        expenses.push({
+
+            name:
+                name || "Unnamed Expense",
+
+            amount:
+                amount
+
+        });
+
+    }
+
+
+    // COST PER PERSON
+
+    const perPerson =
+        total / Math.max(travelers, 1);
+
+
+    // REMAINING
+
+    const remaining =
+        budget - total;
+
+
+    // PERCENTAGE
+
+    let percentage = 0;
+
+
+    if(budget > 0) {
+
+        percentage =
+            (total / budget) * 100;
+
+    }
+
+
+    // DISPLAY TOTAL
+
+    document.getElementById("totalCost").textContent =
+        formatMoney(total);
+
+
+    // DISPLAY PER PERSON
+
+    document.getElementById("perPerson").textContent =
+        formatMoney(perPerson);
+
+
+    // DISPLAY REMAINING
+
+    document.getElementById("remaining").textContent =
+        formatMoney(remaining);
+
+
+    // DISPLAY PERCENTAGE
+
+    document.getElementById("percentage").textContent =
+        percentage.toFixed(1) + "%";
+
+
+    // PROGRESS BAR
+
+    const progressBar =
+        document.getElementById("progressBar");
+
+
+    progressBar.style.width =
+        Math.min(percentage, 100) + "%";
+
+
+    // STATUS
+
+    const status =
+        document.getElementById("status");
+
+
+    if(budget === 0) {
+
+        status.textContent =
+            "Set Budget";
+
+        status.className = "";
+
+    }
+
+    else if(total > budget) {
+
+        status.textContent =
+            "Over Budget";
+
+        status.className =
+            "over-budget";
+
+    }
+
+    else {
+
+        status.textContent =
+            "Within Budget";
+
+        status.className =
+            "within-budget";
+
+    }
+
+
+    // SUMMARY
+
+    const summary =
+        document.getElementById("summary");
+
+
+    summary.innerHTML = "";
+
+
+    expenses.forEach(function(expense) {
+
+
+        const row =
+            document.createElement("div");
+
+
+        row.className =
+            "summary-row";
+
+
+        row.innerHTML = `
+
+            <span>
+                ${escapeHTML(expense.name)}
+            </span>
+
+            <strong>
+                ${formatMoney(expense.amount)}
+            </strong>
+
+        `;
+
+
+        summary.appendChild(row);
+
+    });
+
+
+}
+
+
+
+// =====================================================
+// FORMAT MONEY
+// =====================================================
+
+function formatMoney(amount) {
+
+    return "₹" +
+        Math.round(amount)
+        .toLocaleString("en-IN");
+
+}
+
+
+
+// =====================================================
+// ESCAPE HTML
+// =====================================================
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        text;
+
+    return div.innerHTML;
+
+}
+
+
+
+// =====================================================
+// RESET
+// =====================================================
+
+function resetPlanner() {
+
+
+    document.getElementById("destination").value = "";
+
+    document.getElementById("startDate").value = "";
+
+    document.getElementById("endDate").value = "";
+
+    document.getElementById("travelers").value = "1";
+
+    document.getElementById("budget").value = "20000";
+
+
+    document.getElementById("expenseList").innerHTML = `
+
+        <div class="expense-row">
+
+            <input
+                type="text"
+                class="expense-name"
+                value="Transportation"
+            >
+
+            <input
+                type="number"
+                class="expense-amount"
+                value="0"
+                min="0"
+            >
+
+            <button
+                class="remove-btn"
+                onclick="removeExpense(this)"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="expense-row">
+
+            <input
+                type="text"
+                class="expense-name"
+                value="Hotel"
+            >
+
+            <input
+                type="number"
+                class="expense-amount"
+                value="0"
+                min="0"
+            >
+
+            <button
+                class="remove-btn"
+                onclick="removeExpense(this)"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="expense-row">
+
+            <input
+                type="text"
+                class="expense-name"
+                value="Food"
+            >
+
+            <input
+                type="number"
+                class="expense-amount"
+                value="0"
+                min="0"
+            >
+
+            <button
+                class="remove-btn"
+                onclick="removeExpense(this)"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="expense-row">
+
+            <input
+                type="text"
+                class="expense-name"
+                value="Activities"
+            >
+
+            <input
+                type="number"
+                class="expense-amount"
+                value="0"
+                min="0"
+            >
+
+            <button
+                class="remove-btn"
+                onclick="removeExpense(this)"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="expense-row">
+
+            <input
+                type="text"
+                class="expense-name"
+                value="Shopping"
+            >
+
+            <input
+                type="number"
+                class="expense-amount"
+                value="0"
+                min="0"
+            >
+
+            <button
+                class="remove-btn"
+                onclick="removeExpense(this)"
+            >
+                ×
+            </button>
+
+        </div>
+
+    `;
+
+
+    calculateExpense();
+
+}
+
+
+// =====================================================
+// INITIAL CALCULATION
+// =====================================================
+
+calculateExpense();
+
+
+</script>
+
+
+</body>
+
+</html>
